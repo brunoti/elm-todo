@@ -11,6 +11,11 @@
   height: inherit;
 }
 
+:root {
+  --primary: #102842;
+  --default-color: #FFF;
+}
+
 * {
   box-sizing: border-box;
   color: inherit;
@@ -24,22 +29,107 @@ body, html {
 body {
   font-family: 'Share Tech Mono', monospace;
   margin: 0;
-  background-color: #102842;
-  color: #A1A1A1;
+  background-color: var(--primary);
+  color: var(--default-color);
   font-size: 12px;
   width: 100%;
   height: 100%;
 }
 
 .box {
-  border: #A1A1A1 solid 1px;
+  border: var(--default-color) solid 1px;
   margin: 20px;
   height: calc(100% - 40px);
   width: calc(100% - 40px);
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.board {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 10px;
+  flex: 1;
+}
+
+.board__column {
+  border: 1px var(--default-color) solid;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.board__column-title {
+  margin: 0;
+  padding: 10px;
+  border-bottom: 1px var(--default-color) solid;
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 100%;
+  display: block;
+}
+
+.board__task {
+  padding: 10px;
+  display: block;
+  width: 100%;
+  border-bottom: 1px var(--default-color) solid;
+  font-weight: lighter;
+  cursor: pointer;
+}
+
+.board__column:last-of-type {
+  margin-right: 0px;
 }
 
 .box__title {
   margin: 0;
   font-size: 2rem;
+}
+
+.form {
+  width: 100%;
+  flex: 0;
+}
+
+.form__stage-selector {
+  padding: 10px;
+}
+
+.form__stage,
+.form__btn {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px var(--default-color) solid;
+  display: inline-block;
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.2s ease;
+}
+
+.form__btn {
+  background: transparent;
+}
+
+.form__btn:hover,
+.form__stage:hover {
+  opacity: 0.7;
+}
+
+.form__stage-checkbox {
+  margin-right: 10px;
+}
+
+.form__input {
+  display: block;
+  width: 100%;
+  height: 50px;
+  color: var(--primary);
+  font-size: 1.8rem;
+  outline: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 0;
 }

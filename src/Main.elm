@@ -1,12 +1,22 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, Attribute, text, div, h1, p, ul, li, input, label)
+import Html exposing (Html, Attribute, text, div, h1, h2, p, ul, li, input, label, button)
 import Html.Attributes exposing (src, class, value, type_, name, checked)
 import Html.Events exposing (onInput, onClick, keyCode, on, targetValue)
 import Debug exposing (log)
 import Json.Decode as Json
 
+---- PROGRAM ----
+
+main : Program () Model Msg
+main =
+  Browser.element
+  { view = view
+  , init = \_ -> init
+  , update = update
+  , subscriptions = always Sub.none
+  }
 
 
 ---- MODEL ----
@@ -93,50 +103,44 @@ update msg model =
 
 view : Model -> Html Msg
 view model = 
-  box 
-  [ h1 [ class "box__title" ] [ text "The Final Elm Todo App" ]
-  , renderTodoList model.tasks
-  , input [ onInput SetName, onEnter Save, value model.taskToBe.name ] []
-  , label []
-      [ input
-        [ type_ "radio"
-        , name "stage" 
-        , checked (model.taskToBe.stage == Todo)
-        , onClick (SetStage Todo)
-        , onEnter Save
-        ] []
-        , text (translateStage Todo)
+  viewBox 
+  [ div [ class "board" ]
+      [ viewBoardColumn model.tasks Todo
+      , viewBoardColumn model.tasks Doing
+      , viewBoardColumn model.tasks InReview
+      , viewBoardColumn model.tasks Done
       ]
-  , label []
-      [ input
-        [ type_ "radio"
-        , name "stage" 
-        , checked (model.taskToBe.stage == Doing)
-        , onClick (SetStage Doing)
-        , onEnter Save
-        ] []
-        , text (translateStage Doing)
+  , div [ class "form" ]
+    [ input
+      [ onInput SetName
+      , onEnter Save 
+      , value model.taskToBe.name
+      , class "form__input"
+      ] []
+    , div [ class "form__stage-selector" ]
+      [ viewStageCheckbox (model.taskToBe.stage == Todo) (SetStage Todo) (translateStage Todo)
+      , viewStageCheckbox (model.taskToBe.stage == Doing) (SetStage Doing) (translateStage Doing)
+      , viewStageCheckbox (model.taskToBe.stage == InReview) (SetStage InReview) (translateStage InReview)
+      , viewStageCheckbox (model.taskToBe.stage == Done) (SetStage Done) (translateStage Done)
+      , button [ class "form__btn", onClick Save ] [ text "SAVE" ]
       ]
-  , label []
-      [ input
-        [ type_ "radio"
-        , name "stage" 
-        , checked (model.taskToBe.stage == InReview)
-        , onClick (SetStage InReview)
-        ] []
-        , text (translateStage InReview)
-      ]
-  , label []
-      [ input
-        [ type_ "radio"
-        , name "stage" 
-        , checked (model.taskToBe.stage == Done)
-        , onClick (SetStage Done)
-        , onEnter Save
-        ] []
-        , text (translateStage Done)
-      ]
+    ]
   ]
+
+
+viewBoardColumn : List Task -> Stage -> Html Msg
+viewBoardColumn tasks stage =
+   div [ class "board__column" ]
+    [ h2 [ class "board__column-title" ] [ text (translateStage stage) ]
+    , tasks
+        |> List.filter (taskIs stage)
+        |> List.map viewTodo
+        |> div []
+    ]
+
+taskIs : Stage -> Task -> Bool
+taskIs stage task =
+  stage == task.stage
 
 translateStage : Stage -> String
 translateStage stage =
@@ -146,19 +150,27 @@ translateStage stage =
     InReview -> "In Review" 
     Done -> "Done" 
 
+viewStageCheckbox : Bool -> Msg -> String -> Html Msg
+viewStageCheckbox isChecked msg desc =
+  label [ class "form__stage" ]
+    [ input
+      [ type_ "radio"
+      , name "stage" 
+      , checked isChecked
+      , onClick msg
+      , onEnter Save
+      , class "form__stage-checkbox" 
+    ] []
+    , text desc
+  ]
 
-box : List (Html Msg) -> Html Msg
-box elements
+viewBox : List (Html Msg) -> Html Msg
+viewBox elements
   = div [ class "box" ] elements
 
-renderTodoList : List Task -> Html Msg
-renderTodoList tasks
-  = ul []
-  (List.map renderTodo tasks)
-
-renderTodo : Task -> Html Msg
-renderTodo task
-  = li [] [text (task.name ++ " " ++ "[" ++ (translateStage task.stage) ++ "]")]
+viewTodo : Task -> Html Msg
+viewTodo task
+  = div [ class "board__task" ] [text task.name]
 
 onEnter : Msg -> Attribute Msg
 onEnter msg =
@@ -171,14 +183,3 @@ onEnter msg =
   in
      on "keydown" (Json.andThen isEnter keyCode)
 
----- PROGRAM ----
-
-
-main : Program () Model Msg
-main =
-  Browser.element
-  { view = view
-  , init = \_ -> init
-  , update = update
-  , subscriptions = always Sub.none
-  }
