@@ -133,3 +133,122 @@ body {
   padding-right: 10px;
   border: 0;
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+.modal--open {
+  display: flex;
+}
+
+
+.modal--open > .modal__dialog {
+  opacity: 1;
+}
+
+.modal__dialog {
+  background-color: var(--default-color);
+  width: 40%;
+  height: auto;
+  border-radius: 5px;
+  padding: 15px 15px;
+  opacity: 0;
+  transition: all 1s ease;
+  position: relative;
+}
+
+.modal__subtitle {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: light;
+  margin-bottom: 10px;
+}
+
+.modal__title {
+  color: var(--primary);
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.modal__close {
+  --height: 40px;
+  color: var(--primary);
+  font-size: 2rem;
+  font-weight: bold;
+  background-color: transparent;
+  border: 0;
+  top: 10px;
+  right: 10px;
+  height: var(--height);
+  width: var(--height);
+  line-height: var(--height);
+  padding: 0;
+  text-align: center;
+  position: absolute;
+  cursor: pointer;
+  outline: 0;
+}
+
+.modal__stage {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: left;
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 2px var(--primary) solid;
+  color: var(--primary);
+  display: inline-block;
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.2s ease;
+  background: transparent;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.modal__stage--selected {
+  color: gray;
+  border-color: gray;
+  cursor: not-allowed;
+}
+
+.modal__stage--selected:after {
+  content: 'SELECTED';
+  border-radius: 5px;
+  background-color: var(--primary);
+  color: var(--default-color);
+  font-size: 0.65rem;
+  padding: 5px 10px;
+  float: right;
+}
+
+.alert {
+  width: 100%;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 15px 20px;;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.alert--danger {
+  background-color: #B2293C;
+}
+
+.modal__stage--danger {
+  border-color: #B2293C;
+  color: #B2293C;
+}
